@@ -14,7 +14,7 @@ const UI = (() => {
   };
 
   function validar() {
-    const ids = ['valorImovel', 'taxaAdm', 'meses'];
+    const ids = ['valorImovel', 'taxaAdm', 'meses', 'reajuste'];
     ids.forEach((id) => {
       document.getElementById(id).classList.remove('is-invalid');
       document.getElementById(`erro-${id}`).textContent = '';
@@ -23,6 +23,7 @@ const UI = (() => {
     const valorImovel = parseFloat(document.getElementById('valorImovel').value);
     const taxaAdm     = parseFloat(document.getElementById('taxaAdm').value);
     const meses       = parseInt(document.getElementById('meses').value, 10);
+    const reajuste    = parseFloat(document.getElementById('reajuste').value);
 
     let valido = true;
 
@@ -41,13 +42,17 @@ const UI = (() => {
     if (!meses || meses < 1 || !Number.isInteger(meses))
       erro('meses', 'Informe um número de meses válido (mínimo 1).');
 
-    return valido ? { valido: true, data: { valorImovel, taxaAdm, meses } } : { valido: false };
+    if (isNaN(reajuste) || reajuste < 0)
+      erro('reajuste', 'Informe um reajuste anual válido (mínimo 0%).');
+
+    return valido ? { valido: true, data: { valorImovel, taxaAdm, meses, reajuste } } : { valido: false };
   }
 
   function renderizarResumo(resultado) {
     document.getElementById('resumo-taxaAdm').textContent   = formatBRL(resultado.taxaAdmTotal);
     document.getElementById('resumo-totalBruto').textContent = formatBRL(resultado.totalBruto);
     document.getElementById('resumo-quotaBase').textContent  = formatBRL(resultado.quotaBase);
+    document.getElementById('resumo-totalPago').textContent  = formatBRL(resultado.totalPago);
   }
 
   function renderizarTabela(resultado) {
@@ -85,7 +90,7 @@ const UI = (() => {
   function limparResultado() {
     document.getElementById('resultado-container').classList.add('d-none');
     document.getElementById('resultado-body').innerHTML = '';
-    ['valorImovel', 'taxaAdm', 'meses'].forEach((id) => {
+    ['valorImovel', 'taxaAdm', 'meses', 'reajuste'].forEach((id) => {
       document.getElementById(id).classList.remove('is-invalid');
     });
   }

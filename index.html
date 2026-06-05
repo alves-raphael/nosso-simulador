@@ -1,121 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulador de Consórcio Imobiliário</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <div class="container py-5">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Consórcio Imobiliário</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container py-5">
+      <header class="mb-4">
+        <h1 class="h3 fw-bold text-primary">
+          Simulador de Consórcio Imobiliário
+        </h1>
+        <p class="text-muted mb-0">Calcule suas parcelas com reajuste anual</p>
+      </header>
 
-    <header class="mb-4">
-      <h1 class="h3 fw-bold text-primary">Simulador de Consórcio Imobiliário</h1>
-      <p class="text-muted mb-0">Calcule suas parcelas com reajuste anual de 5%</p>
-    </header>
+      <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+          <form id="form-simulador" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="valorImovel" class="form-label fw-semibold"
+                  >Valor do Imóvel (R$)</label
+                >
+                <input
+                  type="number"
+                  id="valorImovel"
+                  class="form-control"
+                  min="1"
+                  step="0.01"
+                  placeholder="Ex: 300000"
+                />
+                <div class="invalid-feedback" id="erro-valorImovel"></div>
+              </div>
 
-    <div class="card shadow-sm mb-4">
-      <div class="card-body p-4">
-        <form id="form-simulador" novalidate>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="valorImovel" class="form-label fw-semibold">Valor do Imóvel (R$)</label>
-              <input
-                type="number"
-                id="valorImovel"
-                class="form-control"
-                min="1"
-                step="0.01"
-                placeholder="Ex: 300000"
-              />
-              <div class="invalid-feedback" id="erro-valorImovel"></div>
+              <div class="col-md-6">
+                <label for="taxaAdm" class="form-label fw-semibold"
+                  >Taxa de Administração (%)</label
+                >
+                <input
+                  type="number"
+                  id="taxaAdm"
+                  class="form-control"
+                  min="0"
+                  step="0.01"
+                  placeholder="Ex: 18"
+                />
+                <div class="invalid-feedback" id="erro-taxaAdm"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="meses" class="form-label fw-semibold"
+                  >Prazo (meses)</label
+                >
+                <input
+                  type="number"
+                  id="meses"
+                  class="form-control"
+                  min="1"
+                  step="1"
+                  placeholder="Ex: 120"
+                />
+                <div class="invalid-feedback" id="erro-meses"></div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="reajuste" class="form-label fw-semibold"
+                  >Reajuste anual (%)</label
+                >
+                <input
+                  type="number"
+                  id="reajuste"
+                  class="form-control"
+                  min="0"
+                  step="0.01"
+                  value="5"
+                />
+                <div class="invalid-feedback" id="erro-reajuste"></div>
+              </div>
             </div>
 
-            <div class="col-md-6">
-              <label for="taxaAdm" class="form-label fw-semibold">Taxa de Administração (%)</label>
-              <input
-                type="number"
-                id="taxaAdm"
-                class="form-control"
-                min="0"
-                step="0.01"
-                placeholder="Ex: 18"
-              />
-              <div class="invalid-feedback" id="erro-taxaAdm"></div>
+            <div class="mt-4 d-flex gap-2">
+              <button type="submit" class="btn btn-primary px-4">
+                Calcular
+              </button>
+              <button type="reset" class="btn btn-outline-secondary px-4">
+                Limpar
+              </button>
             </div>
+          </form>
+        </div>
+      </div>
 
-            <div class="col-md-6">
-              <label for="meses" class="form-label fw-semibold">Prazo (meses)</label>
-              <input
-                type="number"
-                id="meses"
-                class="form-control"
-                min="1"
-                step="1"
-                placeholder="Ex: 120"
-              />
-              <div class="invalid-feedback" id="erro-meses"></div>
+      <div id="resultado-container" class="d-none">
+        <div class="resumo-card mb-4">
+          <h2 class="h6 fw-bold text-primary mb-3">Resumo da simulação</h2>
+          <div class="resumo-item">
+            <span class="resumo-label">Taxa de administração total</span>
+            <span class="resumo-valor" id="resumo-taxaAdm">—</span>
+          </div>
+          <div class="resumo-item">
+            <span class="resumo-label">Total a financiar (crédito + taxa)</span>
+            <span class="resumo-valor" id="resumo-totalBruto">—</span>
+          </div>
+          <div class="resumo-item">
+            <span class="resumo-label">Parcela base (sem reajuste)</span>
+            <span class="resumo-valor" id="resumo-quotaBase">—</span>
+          </div>
+          <div class="resumo-item">
+            <span class="resumo-label">Total pago (com reajustes)</span>
+            <span class="resumo-valor" id="resumo-totalPago">—</span>
+          </div>
+        </div>
+
+        <h2 class="h5 fw-semibold mb-3">Tabela de parcelas</h2>
+        <div class="card shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table
+                class="table table-striped table-hover mb-0"
+                id="tabela-resultado"
+              >
+                <thead class="table-primary">
+                  <tr>
+                    <th scope="col" class="text-center">Mês</th>
+                    <th scope="col" class="text-center">Reajuste acumulado</th>
+                    <th scope="col" class="text-end">Parcela do mês</th>
+                    <th scope="col" class="text-end">Total pago até aqui</th>
+                  </tr>
+                </thead>
+                <tbody id="resultado-body"></tbody>
+                <tfoot class="table-dark fw-bold">
+                  <tr>
+                    <td colspan="2">Total pago</td>
+                    <td class="text-end" id="total-pago" colspan="2"></td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           </div>
-
-          <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-primary px-4">Calcular</button>
-            <button type="reset" class="btn btn-outline-secondary px-4">Limpar</button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
 
-    <div id="resultado-container" class="d-none">
-
-      <div class="resumo-card mb-4">
-        <h2 class="h6 fw-bold text-primary mb-3">Resumo da simulação</h2>
-        <div class="resumo-item">
-          <span class="resumo-label">Taxa de administração total</span>
-          <span class="resumo-valor" id="resumo-taxaAdm">—</span>
-        </div>
-        <div class="resumo-item">
-          <span class="resumo-label">Total a financiar (crédito + taxa)</span>
-          <span class="resumo-valor" id="resumo-totalBruto">—</span>
-        </div>
-        <div class="resumo-item">
-          <span class="resumo-label">Parcela base (sem reajuste)</span>
-          <span class="resumo-valor" id="resumo-quotaBase">—</span>
-        </div>
-      </div>
-
-      <h2 class="h5 fw-semibold mb-3">Tabela de parcelas</h2>
-      <div class="card shadow-sm">
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0" id="tabela-resultado">
-              <thead class="table-primary">
-                <tr>
-                  <th scope="col" class="text-center">Mês</th>
-                  <th scope="col" class="text-center">Reajuste acumulado</th>
-                  <th scope="col" class="text-end">Parcela do mês</th>
-                  <th scope="col" class="text-end">Total pago até aqui</th>
-                </tr>
-              </thead>
-              <tbody id="resultado-body"></tbody>
-              <tfoot class="table-dark fw-bold">
-                <tr>
-                  <td colspan="2">Total pago</td>
-                  <td class="text-end" id="total-pago" colspan="2"></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/calculator.js"></script>
-  <script src="js/ui.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/ui.js"></script>
+  </body>
 </html>
