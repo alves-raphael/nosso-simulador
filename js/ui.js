@@ -14,16 +14,18 @@ const UI = (() => {
   };
 
   function validar() {
-    const ids = ['valorImovel', 'taxaAdm', 'meses', 'reajuste'];
+    const ids = ['valorImovel', 'taxaAdm', 'meses', 'reajuste', 'valorAluguel', 'taxaCorrecaoAluguel'];
     ids.forEach((id) => {
       document.getElementById(id).classList.remove('is-invalid');
       document.getElementById(`erro-${id}`).textContent = '';
     });
 
-    const valorImovel = parseFloat(document.getElementById('valorImovel').value);
-    const taxaAdm     = parseFloat(document.getElementById('taxaAdm').value);
-    const meses       = parseInt(document.getElementById('meses').value, 10);
-    const reajuste    = parseFloat(document.getElementById('reajuste').value);
+    const valorImovel          = parseFloat(document.getElementById('valorImovel').value);
+    const taxaAdm              = parseFloat(document.getElementById('taxaAdm').value);
+    const meses                = parseInt(document.getElementById('meses').value, 10);
+    const reajuste             = parseFloat(document.getElementById('reajuste').value);
+    const valorAluguel         = parseFloat(document.getElementById('valorAluguel').value) || 0;
+    const taxaCorrecaoAluguel  = parseFloat(document.getElementById('taxaCorrecaoAluguel').value);
 
     let valido = true;
 
@@ -45,20 +47,32 @@ const UI = (() => {
     if (isNaN(reajuste) || reajuste < 0)
       erro('reajuste', 'Informe um reajuste anual válido (mínimo 0%).');
 
-    return valido ? { valido: true, data: { valorImovel, taxaAdm, meses, reajuste } } : { valido: false };
+    if (valorAluguel < 0)
+      erro('valorAluguel', 'O valor do aluguel não pode ser negativo.');
+
+    if (valorAluguel > 0 && (isNaN(taxaCorrecaoAluguel) || taxaCorrecaoAluguel < 0))
+      erro('taxaCorrecaoAluguel', 'Informe uma taxa de correção válida (mínimo 0%).');
+
+    return valido
+      ? { valido: true, data: { valorImovel, taxaAdm, meses, reajuste, valorAluguel, taxaCorrecaoAluguel } }
+      : { valido: false };
   }
 
   function renderizarResumo(resultado) {
-    document.getElementById('resumo-taxaAdm').textContent   = formatBRL(resultado.taxaAdmTotal);
+    document.getElementById('resumo-taxaAdm').textContent    = formatBRL(resultado.taxaAdmTotal);
     document.getElementById('resumo-totalBruto').textContent = formatBRL(resultado.totalBruto);
     document.getElementById('resumo-quotaBase').textContent  = formatBRL(resultado.quotaBase);
     document.getElementById('resumo-totalPago').textContent  = formatBRL(resultado.totalPago);
+    document.getElementById('resumo-totalAluguel').textContent = formatBRL(resultado.totalAluguel);
   }
 
-  function renderizarTabela(resultado) {
+  function renderizarTabela(resultado, comAluguel) {
+    const container = document.getElementById('resultado-container');
+    container.classList.toggle('sem-aluguel', !comAluguel);
+
     const fragment = document.createDocumentFragment();
 
-    resultado.parcelas.forEach(({ mes, fatorReajuste, parcela, totalAcumulado }) => {
+    resultado.parcelas.forEach(({ mes, fatorReajuste, parcela, totalAcumulado, aluguelAcumulado }) => {
       const tr = document.createElement('tr');
 
       if (mes > 1 && (mes - 1) % 12 === 0) {
@@ -70,6 +84,7 @@ const UI = (() => {
         <td class="text-center">${formatReajuste(fatorReajuste)}</td>
         <td class="text-end">${formatBRL(parcela)}</td>
         <td class="text-end">${formatBRL(totalAcumulado)}</td>
+        <td class="col-aluguel text-end">${formatBRL(aluguelAcumulado)}</td>
       `;
       fragment.appendChild(tr);
     });
@@ -78,11 +93,11 @@ const UI = (() => {
     tbody.innerHTML = '';
     tbody.appendChild(fragment);
 
-    document.getElementById('total-pago').textContent = formatBRL(resultado.totalPago);
+    document.getElementById('total-pago').textContent        = formatBRL(resultado.totalPago);
+    document.getElementById('total-aluguel').textContent     = formatBRL(resultado.totalAluguel);
 
     renderizarResumo(resultado);
 
-    const container = document.getElementById('resultado-container');
     container.classList.remove('d-none');
     container.scrollIntoView({ behavior: 'smooth' });
   }
@@ -90,7 +105,7 @@ const UI = (() => {
   function limparResultado() {
     document.getElementById('resultado-container').classList.add('d-none');
     document.getElementById('resultado-body').innerHTML = '';
-    ['valorImovel', 'taxaAdm', 'meses', 'reajuste'].forEach((id) => {
+    ['valorImovel', 'taxaAdm', 'meses', 'reajuste', 'valorAluguel', 'taxaCorrecaoAluguel'].forEach((id) => {
       document.getElementById(id).classList.remove('is-invalid');
     });
   }
@@ -100,7 +115,7 @@ const UI = (() => {
       e.preventDefault();
       const { valido, data } = validar();
       if (!valido) return;
-      renderizarTabela(Calculator.calcular(data));
+      renderizarTabela(Calculator.calcular(data), data.valorAluguel > 0);
     });
 
     document.getElementById('form-simulador').addEventListener('reset', limparResultado);

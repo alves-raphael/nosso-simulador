@@ -60,6 +60,9 @@ body {
   border-left: 4px solid var(--cor-acento);
 }
 
+/* Oculta coluna de aluguel quando não informado */
+.sem-aluguel .col-aluguel { display: none; }
+
 /* Mobile */
 @media (max-width: 576px) {
   .table td,
