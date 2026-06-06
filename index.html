@@ -18,89 +18,93 @@
     <div class="card shadow-sm mb-4">
       <div class="card-body p-4">
         <form id="form-simulador" novalidate>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="valorImovel" class="form-label fw-semibold">Valor do Imóvel (R$)</label>
-              <input
-                type="number"
-                id="valorImovel"
-                class="form-control"
-                min="1"
-                step="0.01"
-                placeholder="Ex: 300000"
-              />
-              <div class="invalid-feedback" id="erro-valorImovel"></div>
+          <div class="row g-0">
+
+            <!-- Esquerda: dados do consórcio -->
+            <div class="col-12 col-md-6 form-col-esquerda pe-md-4">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="valorImovel" class="form-label fw-semibold">Valor do Imóvel (R$)</label>
+                  <input
+                    type="number"
+                    id="valorImovel"
+                    class="form-control"
+                    min="1"
+                    step="0.01"
+                    placeholder="Ex: 300000"
+                  />
+                  <div class="invalid-feedback" id="erro-valorImovel"></div>
+                </div>
+                <div class="col-12">
+                  <label for="taxaAdm" class="form-label fw-semibold">Taxa de Administração (%)</label>
+                  <input
+                    type="number"
+                    id="taxaAdm"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    placeholder="Ex: 18"
+                  />
+                  <div class="invalid-feedback" id="erro-taxaAdm"></div>
+                </div>
+                <div class="col-12">
+                  <label for="meses" class="form-label fw-semibold">Prazo (meses)</label>
+                  <input
+                    type="number"
+                    id="meses"
+                    class="form-control"
+                    min="1"
+                    step="1"
+                    placeholder="Ex: 120"
+                  />
+                  <div class="invalid-feedback" id="erro-meses"></div>
+                </div>
+                <div class="col-12">
+                  <label for="reajuste" class="form-label fw-semibold">Reajuste anual (%)</label>
+                  <input
+                    type="number"
+                    id="reajuste"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    value="5"
+                  />
+                  <div class="invalid-feedback" id="erro-reajuste"></div>
+                </div>
+              </div>
             </div>
 
-            <div class="col-md-6">
-              <label for="taxaAdm" class="form-label fw-semibold">Taxa de Administração (%)</label>
-              <input
-                type="number"
-                id="taxaAdm"
-                class="form-control"
-                min="0"
-                step="0.01"
-                placeholder="Ex: 18"
-              />
-              <div class="invalid-feedback" id="erro-taxaAdm"></div>
+            <!-- Direita: aluguel -->
+            <div class="col-12 col-md-6 form-col-direita ps-md-4">
+              <p class="form-secao-titulo">Ainda paga aluguel?</p>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="valorAluguel" class="form-label fw-semibold">Valor do aluguel (R$)</label>
+                  <input
+                    type="number"
+                    id="valorAluguel"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    placeholder="Ex: 2000 (deixe vazio para ignorar)"
+                  />
+                  <div class="invalid-feedback" id="erro-valorAluguel"></div>
+                </div>
+                <div class="col-12">
+                  <label for="taxaCorrecaoAluguel" class="form-label fw-semibold">Correção anual do aluguel (%)</label>
+                  <input
+                    type="number"
+                    id="taxaCorrecaoAluguel"
+                    class="form-control"
+                    min="0"
+                    step="0.01"
+                    value="5"
+                  />
+                  <div class="invalid-feedback" id="erro-taxaCorrecaoAluguel"></div>
+                </div>
+              </div>
             </div>
 
-            <div class="col-md-6">
-              <label for="meses" class="form-label fw-semibold">Prazo (meses)</label>
-              <input
-                type="number"
-                id="meses"
-                class="form-control"
-                min="1"
-                step="1"
-                placeholder="Ex: 120"
-              />
-              <div class="invalid-feedback" id="erro-meses"></div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="reajuste" class="form-label fw-semibold">Reajuste anual (%)</label>
-              <input
-                type="number"
-                id="reajuste"
-                class="form-control"
-                min="0"
-                step="0.01"
-                value="5"
-              />
-              <div class="invalid-feedback" id="erro-reajuste"></div>
-            </div>
-
-            <div class="col-12">
-              <hr class="my-1" />
-              <span class="fw-semibold text-secondary small">Ainda paga aluguel?</span>
-            </div>
-
-            <div class="col-md-6">
-              <label for="valorAluguel" class="form-label fw-semibold">Valor do aluguel (R$)</label>
-              <input
-                type="number"
-                id="valorAluguel"
-                class="form-control"
-                min="0"
-                step="0.01"
-                placeholder="Ex: 2000 (deixe vazio para ignorar)"
-              />
-              <div class="invalid-feedback" id="erro-valorAluguel"></div>
-            </div>
-
-            <div class="col-md-6">
-              <label for="taxaCorrecaoAluguel" class="form-label fw-semibold">Correção anual do aluguel (%)</label>
-              <input
-                type="number"
-                id="taxaCorrecaoAluguel"
-                class="form-control"
-                min="0"
-                step="0.01"
-                value="5"
-              />
-              <div class="invalid-feedback" id="erro-taxaCorrecaoAluguel"></div>
-            </div>
           </div>
 
           <div class="mt-4 d-flex gap-2">
