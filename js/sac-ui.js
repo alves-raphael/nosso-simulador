@@ -1,8 +1,20 @@
 'use strict';
 
+import IMask from 'imask';
 import { calcular } from './sac-calculator.js';
 
-let linhaCount = 0;
+const MONEY_MASK = {
+  mask: Number,
+  thousandsSeparator: '.',
+  radix: ',',
+  scale: 2,
+  padFractionalZeros: false,
+  normalizeZeros: true,
+  signed: false,
+};
+
+let linhaCount  = 0;
+const amortMasks = {}; // { [id]: IMask instance }
 
 const formatBRL = (value) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(value);
@@ -10,8 +22,8 @@ const formatBRL = (value) =>
 // ─── Mini-tabela de amortizações extras ──────────────────────────────────────
 
 function atualizarEstadoVazio() {
-  const tbody    = document.getElementById('amort-extras-lista');
-  const vazio    = document.getElementById('amort-extras-vazio');
+  const tbody     = document.getElementById('amort-extras-lista');
+  const vazio     = document.getElementById('amort-extras-vazio');
   const temLinhas = tbody.querySelectorAll('tr:not(#amort-extras-vazio)').length > 0;
   vazio.classList.toggle('d-none', temLinhas);
 }
@@ -29,8 +41,8 @@ function adicionarLinhaAmortizacao() {
         min="1" step="1" placeholder="Ex: 12" />
     </td>
     <td>
-      <input type="number" class="form-control form-control-sm amort-valor"
-        min="0.01" step="0.01" placeholder="Ex: 50000" />
+      <input type="text" inputmode="decimal" class="form-control form-control-sm amort-valor"
+        placeholder="Ex: 50.000" data-mask-id="${id}" />
     </td>
     <td class="text-center align-middle">
       <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2"
@@ -38,14 +50,17 @@ function adicionarLinhaAmortizacao() {
     </td>
   `;
   tbody.appendChild(tr);
+
+  amortMasks[id] = IMask(tr.querySelector('.amort-valor'), MONEY_MASK);
   atualizarEstadoVazio();
 }
 
 function coletarAmortizacoes() {
   const mapa = {};
   document.querySelectorAll('#amort-extras-lista tr:not(#amort-extras-vazio)').forEach((tr) => {
-    const mes   = parseInt(tr.querySelector('.amort-mes').value, 10);
-    const valor = parseFloat(tr.querySelector('.amort-valor').value);
+    const mes    = parseInt(tr.querySelector('.amort-mes').value, 10);
+    const maskId = tr.querySelector('.amort-valor').dataset.maskId;
+    const valor  = parseFloat(amortMasks[maskId]?.unmaskedValue) || 0;
     if (mes > 0 && valor > 0) mapa[mes] = (mapa[mes] || 0) + valor;
   });
   return mapa;
@@ -53,15 +68,15 @@ function coletarAmortizacoes() {
 
 // ─── Validação ───────────────────────────────────────────────────────────────
 
-function validar() {
+function validar(masks) {
   const ids = ['valorImovel', 'entrada', 'taxaJuros', 'prazo'];
   ids.forEach((id) => {
     document.getElementById(id).classList.remove('is-invalid');
     document.getElementById(`erro-${id}`).textContent = '';
   });
 
-  const valorImovel = parseFloat(document.getElementById('valorImovel').value);
-  const entrada     = parseFloat(document.getElementById('entrada').value) || 0;
+  const valorImovel = parseFloat(masks.valorImovel.unmaskedValue) || 0;
+  const entrada     = parseFloat(masks.entrada.unmaskedValue) || 0;
   const taxaJuros   = parseFloat(document.getElementById('taxaJuros').value);
   const prazo       = parseInt(document.getElementById('prazo').value, 10);
 
@@ -101,8 +116,8 @@ function renderizarComparativo({ base, comAmortizacao }, entrada) {
   const economia     = base.totalJuros - comAmortizacao.totalJuros;
   const mesesAntecip = base.prazoEfetivo - comAmortizacao.prazoEfetivo;
 
-  document.getElementById('amort-economia').textContent       = formatBRL(economia);
-  document.getElementById('amort-meses-antecip').textContent  = `${mesesAntecip} meses`;
+  document.getElementById('amort-economia').textContent      = formatBRL(economia);
+  document.getElementById('amort-meses-antecip').textContent = `${mesesAntecip} meses`;
   document.getElementById('row-meses-antecip').classList.toggle('d-none', mesesAntecip <= 0);
 }
 
@@ -132,30 +147,38 @@ function renderizarTabela({ comAmortizacao }) {
   tbody.appendChild(fragment);
 }
 
-function limparResultado() {
+function limparResultado(masks) {
   document.getElementById('resultado-container').classList.add('d-none');
   document.getElementById('resultado-body').innerHTML = '';
   ['valorImovel', 'entrada', 'taxaJuros', 'prazo'].forEach((id) =>
     document.getElementById(id).classList.remove('is-invalid')
   );
+  Object.values(masks).forEach((m) => { m.unmaskedValue = ''; });
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 function init() {
+  const masks = {
+    valorImovel: IMask(document.getElementById('valorImovel'), MONEY_MASK),
+    entrada:     IMask(document.getElementById('entrada'),     MONEY_MASK),
+  };
+
   document.getElementById('btn-add-amort').addEventListener('click', adicionarLinhaAmortizacao);
 
-  // Event delegation para remover linhas
   document.getElementById('amort-extras-lista').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-remove-id]');
     if (!btn) return;
-    document.getElementById(`amort-linha-${btn.dataset.removeId}`).remove();
+    const id = btn.dataset.removeId;
+    amortMasks[id]?.destroy();
+    delete amortMasks[id];
+    document.getElementById(`amort-linha-${id}`).remove();
     atualizarEstadoVazio();
   });
 
   document.getElementById('form-sac').addEventListener('submit', (e) => {
     e.preventDefault();
-    const { valido, data } = validar();
+    const { valido, data } = validar(masks);
     if (!valido) return;
 
     const tipoAmortizacao    = document.querySelector('input[name="tipoAmortizacao"]:checked').value;
@@ -178,9 +201,13 @@ function init() {
   });
 
   document.getElementById('form-sac').addEventListener('reset', () => {
-    limparResultado();
+    limparResultado(masks);
     const tbody = document.getElementById('amort-extras-lista');
-    tbody.querySelectorAll('tr:not(#amort-extras-vazio)').forEach((tr) => tr.remove());
+    tbody.querySelectorAll('tr:not(#amort-extras-vazio)').forEach((tr) => {
+      const maskId = tr.querySelector('.amort-valor')?.dataset.maskId;
+      if (maskId) { amortMasks[maskId]?.destroy(); delete amortMasks[maskId]; }
+      tr.remove();
+    });
     atualizarEstadoVazio();
   });
 

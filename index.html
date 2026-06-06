@@ -31,12 +31,11 @@
                 <div class="col-12">
                   <label for="valorImovel" class="form-label fw-semibold">Valor do Imóvel (R$)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="valorImovel"
                     class="form-control"
-                    min="1"
-                    step="0.01"
-                    placeholder="Ex: 300000"
+                    placeholder="Ex: 300.000"
                   />
                   <div class="invalid-feedback" id="erro-valorImovel"></div>
                 </div>
@@ -102,12 +101,11 @@
                 <div class="col-12">
                   <label for="valorAluguel" class="form-label fw-semibold">Valor do aluguel (R$)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="valorAluguel"
                     class="form-control"
-                    min="0"
-                    step="0.01"
-                    placeholder="Ex: 2000 (deixe vazio para ignorar)"
+                    placeholder="Ex: 2.000 (deixe vazio para ignorar)"
                   />
                   <div class="invalid-feedback" id="erro-valorAluguel"></div>
                 </div>

@@ -28,12 +28,11 @@
             <div class="col-md-6">
               <label for="valorImovel" class="form-label fw-semibold">Valor do imóvel (R$)</label>
               <input
-                type="number"
+                type="text"
+                inputmode="decimal"
                 id="valorImovel"
                 class="form-control"
-                min="1"
-                step="0.01"
-                placeholder="Ex: 600000"
+                placeholder="Ex: 600.000"
               />
               <div class="invalid-feedback" id="erro-valorImovel"></div>
             </div>
@@ -41,12 +40,11 @@
             <div class="col-md-6">
               <label for="entrada" class="form-label fw-semibold">Entrada (R$)</label>
               <input
-                type="number"
+                type="text"
+                inputmode="decimal"
                 id="entrada"
                 class="form-control"
-                min="0"
-                step="0.01"
-                placeholder="Ex: 100000"
+                placeholder="Ex: 100.000"
               />
               <div class="invalid-feedback" id="erro-entrada"></div>
             </div>

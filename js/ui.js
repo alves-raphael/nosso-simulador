@@ -1,6 +1,17 @@
 'use strict';
 
+import IMask from 'imask';
 import { calcular } from './calculator.js';
+
+const MONEY_MASK = {
+  mask: Number,
+  thousandsSeparator: '.',
+  radix: ',',
+  scale: 2,
+  padFractionalZeros: false,
+  normalizeZeros: true,
+  signed: false,
+};
 
 const formatBRL = (value) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(value);
@@ -8,18 +19,20 @@ const formatBRL = (value) =>
 const formatReajuste = (fator) =>
   '+' + ((fator - 1) * 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
 
-function validar() {
+// ─── Validação ───────────────────────────────────────────────────────────────
+
+function validar(masks) {
   const ids = ['valorImovel', 'taxaAdm', 'meses', 'reajuste', 'valorAluguel', 'taxaCorrecaoAluguel'];
   ids.forEach((id) => {
     document.getElementById(id).classList.remove('is-invalid');
     document.getElementById(`erro-${id}`).textContent = '';
   });
 
-  const valorImovel         = parseFloat(document.getElementById('valorImovel').value);
+  const valorImovel         = parseFloat(masks.valorImovel.unmaskedValue) || 0;
   const taxaAdm             = parseFloat(document.getElementById('taxaAdm').value);
   const meses               = parseInt(document.getElementById('meses').value, 10);
   const reajuste            = parseFloat(document.getElementById('reajuste').value);
-  const valorAluguel        = parseFloat(document.getElementById('valorAluguel').value) || 0;
+  const valorAluguel        = parseFloat(masks.valorAluguel.unmaskedValue) || 0;
   const taxaCorrecaoAluguel = parseFloat(document.getElementById('taxaCorrecaoAluguel').value);
 
   let valido = true;
@@ -42,11 +55,13 @@ function validar() {
     : { valido: false };
 }
 
+// ─── Renderização ────────────────────────────────────────────────────────────
+
 function renderizarResumo(resultado) {
-  document.getElementById('resumo-taxaAdm').textContent    = formatBRL(resultado.taxaAdmTotal);
-  document.getElementById('resumo-totalBruto').textContent = formatBRL(resultado.totalBruto);
-  document.getElementById('resumo-quotaBase').textContent  = formatBRL(resultado.quotaBase);
-  document.getElementById('resumo-totalPago').textContent  = formatBRL(resultado.totalPago);
+  document.getElementById('resumo-taxaAdm').textContent     = formatBRL(resultado.taxaAdmTotal);
+  document.getElementById('resumo-totalBruto').textContent  = formatBRL(resultado.totalBruto);
+  document.getElementById('resumo-quotaBase').textContent   = formatBRL(resultado.quotaBase);
+  document.getElementById('resumo-totalPago').textContent   = formatBRL(resultado.totalPago);
   document.getElementById('resumo-totalAluguel').textContent = formatBRL(resultado.totalAluguel);
 }
 
@@ -82,23 +97,33 @@ function renderizarTabela(resultado, comAluguel) {
   container.scrollIntoView({ behavior: 'smooth' });
 }
 
-function limparResultado() {
+function limparResultado(masks) {
   document.getElementById('resultado-container').classList.add('d-none');
   document.getElementById('resultado-body').innerHTML = '';
   ['valorImovel', 'taxaAdm', 'meses', 'reajuste', 'valorAluguel', 'taxaCorrecaoAluguel'].forEach((id) =>
     document.getElementById(id).classList.remove('is-invalid')
   );
+  Object.values(masks).forEach((m) => { m.unmaskedValue = ''; });
 }
 
+// ─── Init ────────────────────────────────────────────────────────────────────
+
 function init() {
+  const masks = {
+    valorImovel:  IMask(document.getElementById('valorImovel'),  MONEY_MASK),
+    valorAluguel: IMask(document.getElementById('valorAluguel'), MONEY_MASK),
+  };
+
   document.getElementById('form-simulador').addEventListener('submit', (e) => {
     e.preventDefault();
-    const { valido, data } = validar();
+    const { valido, data } = validar(masks);
     if (!valido) return;
     renderizarTabela(calcular(data), data.valorAluguel > 0);
   });
 
-  document.getElementById('form-simulador').addEventListener('reset', limparResultado);
+  document.getElementById('form-simulador').addEventListener('reset', () => {
+    limparResultado(masks);
+  });
 
   document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
     new bootstrap.Tooltip(el);

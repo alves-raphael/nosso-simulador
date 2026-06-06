@@ -10,11 +10,15 @@
   "author": "Raphael Alves",
   "type": "module",
   "scripts": {
-    "dev":     "vite",
-    "build":   "vite build",
-    "preview": "vite preview"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "live-server dist"
   },
   "devDependencies": {
     "vite": "^8.0.16"
+  },
+  "dependencies": {
+    "imask": "^7.6.1"
   }
 }
