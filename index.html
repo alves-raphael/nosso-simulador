@@ -60,7 +60,15 @@
                   <div class="invalid-feedback" id="erro-meses"></div>
                 </div>
                 <div class="col-12">
-                  <label for="reajuste" class="form-label fw-semibold">Reajuste anual (%)</label>
+                  <label for="reajuste" class="form-label fw-semibold">
+                    Reajuste anual (%)
+                    <span
+                      class="tooltip-icone"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="right"
+                      data-bs-title="Na prática, as parcelas do consórcio são corrigidas por índices variáveis como INCC ou IPCA, que oscilam a cada ano. Este campo permite presumir uma média anual para ter uma estimativa do impacto ao longo do tempo — não representa um valor fixo garantido."
+                    >?</span>
+                  </label>
                   <input
                     type="number"
                     id="reajuste"
