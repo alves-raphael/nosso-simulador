@@ -121,7 +121,12 @@ const UI = (() => {
     document.getElementById('form-simulador').addEventListener('reset', limparResultado);
   }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', () => {
+    init();
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+      new bootstrap.Tooltip(el);
+    });
+  });
 
   return { init };
 })();

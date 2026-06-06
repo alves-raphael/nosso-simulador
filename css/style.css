@@ -48,6 +48,28 @@ body {
   color: #212529;
 }
 
+/* Ícone de tooltip "?" */
+.tooltip-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #6c757d;
+  border-radius: 50%;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-left: 0.3rem;
+  line-height: 1;
+}
+
+.tooltip-icone:hover {
+  background-color: var(--cor-primaria);
+}
+
 /* Divisão entre os dois grupos do formulário */
 .form-secao-titulo {
   font-size: 0.78rem;
