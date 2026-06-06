@@ -175,6 +175,11 @@ function init() {
     taxaJuros:   IMask(document.getElementById('taxaJuros'),   PERCENT_MASK),
   };
 
+  masks.valorImovel.on('accept', () => {
+    const valor = masks.valorImovel.typedValue;
+    masks.entrada.typedValue = valor > 0 ? Math.round(valor * 0.2 * 100) / 100 : 0;
+  });
+
   document.getElementById('btn-add-amort').addEventListener('click', adicionarLinhaAmortizacao);
 
   document.getElementById('amort-extras-lista').addEventListener('click', (e) => {
