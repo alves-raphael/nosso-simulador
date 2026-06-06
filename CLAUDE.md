@@ -1,4 +1,7 @@
-# Simulador de consórcio imobiliário
+# Nosso Simulador
+
+- Simulador de Consórcio
+- Sac com amortização antecipada
 
 # Diretrizes técnicas
 
