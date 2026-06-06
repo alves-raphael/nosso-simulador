@@ -103,14 +103,16 @@ const SacUI = (() => {
 
   // ─── Renderização ────────────────────────────────────────────────────────
 
-  function renderizarComparativo({ base, comAmortizacao }) {
-    document.getElementById('base-total-juros').textContent = formatBRL(base.totalJuros);
-    document.getElementById('base-total-pago').textContent  = formatBRL(base.totalPago);
-    document.getElementById('base-prazo').textContent       = `${base.prazoEfetivo} meses`;
+  function renderizarComparativo({ base, comAmortizacao }, entrada) {
+    document.getElementById('base-total-juros').textContent       = formatBRL(base.totalJuros);
+    document.getElementById('base-total-pago').textContent        = formatBRL(base.totalPago);
+    document.getElementById('base-prazo').textContent             = `${base.prazoEfetivo} meses`;
+    document.getElementById('base-total-com-entrada').textContent = formatBRL(base.totalPago + entrada);
 
-    document.getElementById('amort-total-juros').textContent = formatBRL(comAmortizacao.totalJuros);
-    document.getElementById('amort-total-pago').textContent  = formatBRL(comAmortizacao.totalPago);
-    document.getElementById('amort-prazo').textContent       = `${comAmortizacao.prazoEfetivo} meses`;
+    document.getElementById('amort-total-juros').textContent       = formatBRL(comAmortizacao.totalJuros);
+    document.getElementById('amort-total-pago').textContent        = formatBRL(comAmortizacao.totalPago);
+    document.getElementById('amort-prazo').textContent             = `${comAmortizacao.prazoEfetivo} meses`;
+    document.getElementById('amort-total-com-entrada').textContent = formatBRL(comAmortizacao.totalPago + entrada);
 
     const economia     = base.totalJuros - comAmortizacao.totalJuros;
     const mesesAntecip = base.prazoEfetivo - comAmortizacao.prazoEfetivo;
@@ -175,7 +177,8 @@ const SacUI = (() => {
         tipoAmortizacao,
       });
 
-      renderizarComparativo(resultado);
+      const entrada = parseFloat(document.getElementById('entrada').value) || 0;
+      renderizarComparativo(resultado, entrada);
       renderizarTabela(resultado);
 
       const container = document.getElementById('resultado-container');
