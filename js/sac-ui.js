@@ -13,6 +13,16 @@ const MONEY_MASK = {
   signed: false,
 };
 
+const PERCENT_MASK = {
+  mask: Number,
+  radix: ',',
+  scale: 4,
+  padFractionalZeros: false,
+  normalizeZeros: true,
+  signed: false,
+  min: 0,
+};
+
 let linhaCount  = 0;
 const amortMasks = {}; // { [id]: IMask instance }
 
@@ -75,9 +85,9 @@ function validar(masks) {
     document.getElementById(`erro-${id}`).textContent = '';
   });
 
-  const valorImovel = parseFloat(masks.valorImovel.unmaskedValue) || 0;
-  const entrada     = parseFloat(masks.entrada.unmaskedValue) || 0;
-  const taxaJuros   = parseFloat(document.getElementById('taxaJuros').value);
+  const valorImovel = masks.valorImovel.typedValue || 0;
+  const entrada     = masks.entrada.typedValue     || 0;
+  const taxaJuros   = masks.taxaJuros.typedValue   || 0;
   const prazo       = parseInt(document.getElementById('prazo').value, 10);
 
   let valido = true;
@@ -162,6 +172,7 @@ function init() {
   const masks = {
     valorImovel: IMask(document.getElementById('valorImovel'), MONEY_MASK),
     entrada:     IMask(document.getElementById('entrada'),     MONEY_MASK),
+    taxaJuros:   IMask(document.getElementById('taxaJuros'),   PERCENT_MASK),
   };
 
   document.getElementById('btn-add-amort').addEventListener('click', adicionarLinhaAmortizacao);

@@ -13,6 +13,16 @@ const MONEY_MASK = {
   signed: false,
 };
 
+const PERCENT_MASK = {
+  mask: Number,
+  radix: ',',
+  scale: 4,
+  padFractionalZeros: false,
+  normalizeZeros: true,
+  signed: false,
+  min: 0,
+};
+
 const formatBRL = (value) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(value);
 
@@ -28,12 +38,12 @@ function validar(masks) {
     document.getElementById(`erro-${id}`).textContent = '';
   });
 
-  const valorImovel         = parseFloat(masks.valorImovel.unmaskedValue) || 0;
-  const taxaAdm             = parseFloat(document.getElementById('taxaAdm').value);
+  const valorImovel         = masks.valorImovel.typedValue         || 0;
+  const taxaAdm             = masks.taxaAdm.typedValue             || 0;
   const meses               = parseInt(document.getElementById('meses').value, 10);
-  const reajuste            = parseFloat(document.getElementById('reajuste').value);
-  const valorAluguel        = parseFloat(masks.valorAluguel.unmaskedValue) || 0;
-  const taxaCorrecaoAluguel = parseFloat(document.getElementById('taxaCorrecaoAluguel').value);
+  const reajuste            = masks.reajuste.typedValue            ?? NaN;
+  const valorAluguel        = masks.valorAluguel.typedValue        || 0;
+  const taxaCorrecaoAluguel = masks.taxaCorrecaoAluguel.typedValue ?? NaN;
 
   let valido = true;
   const erro = (id, msg) => {
@@ -110,8 +120,11 @@ function limparResultado(masks) {
 
 function init() {
   const masks = {
-    valorImovel:  IMask(document.getElementById('valorImovel'),  MONEY_MASK),
-    valorAluguel: IMask(document.getElementById('valorAluguel'), MONEY_MASK),
+    valorImovel:         IMask(document.getElementById('valorImovel'),         MONEY_MASK),
+    valorAluguel:        IMask(document.getElementById('valorAluguel'),        MONEY_MASK),
+    taxaAdm:             IMask(document.getElementById('taxaAdm'),             PERCENT_MASK),
+    reajuste:            IMask(document.getElementById('reajuste'),            PERCENT_MASK),
+    taxaCorrecaoAluguel: IMask(document.getElementById('taxaCorrecaoAluguel'), PERCENT_MASK),
   };
 
   document.getElementById('form-simulador').addEventListener('submit', (e) => {

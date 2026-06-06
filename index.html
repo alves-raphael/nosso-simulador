@@ -42,11 +42,10 @@
                 <div class="col-12">
                   <label for="taxaAdm" class="form-label fw-semibold">Taxa de Administração (%)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="taxaAdm"
                     class="form-control"
-                    min="0"
-                    step="0.01"
                     placeholder="Ex: 18"
                   />
                   <div class="invalid-feedback" id="erro-taxaAdm"></div>
@@ -74,11 +73,10 @@
                     >?</span>
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="reajuste"
                     class="form-control"
-                    min="0"
-                    step="0.01"
                     value="5"
                   />
                   <div class="invalid-feedback" id="erro-reajuste"></div>
@@ -112,11 +110,10 @@
                 <div class="col-12">
                   <label for="taxaCorrecaoAluguel" class="form-label fw-semibold">Correção anual do aluguel (%)</label>
                   <input
-                    type="number"
+                    type="text"
+                    inputmode="decimal"
                     id="taxaCorrecaoAluguel"
                     class="form-control"
-                    min="0"
-                    step="0.01"
                     value="5"
                   />
                   <div class="invalid-feedback" id="erro-taxaCorrecaoAluguel"></div>
