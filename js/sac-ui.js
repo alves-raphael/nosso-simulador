@@ -65,15 +65,16 @@ const SacUI = (() => {
   // ─── Validação ───────────────────────────────────────────────────────────
 
   function validar() {
-    const ids = ['valorFinanciado', 'taxaJuros', 'prazo'];
+    const ids = ['valorImovel', 'entrada', 'taxaJuros', 'prazo'];
     ids.forEach((id) => {
       document.getElementById(id).classList.remove('is-invalid');
       document.getElementById(`erro-${id}`).textContent = '';
     });
 
-    const valorFinanciado = parseFloat(document.getElementById('valorFinanciado').value);
-    const taxaJuros       = parseFloat(document.getElementById('taxaJuros').value);
-    const prazo           = parseInt(document.getElementById('prazo').value, 10);
+    const valorImovel = parseFloat(document.getElementById('valorImovel').value);
+    const entrada     = parseFloat(document.getElementById('entrada').value) || 0;
+    const taxaJuros   = parseFloat(document.getElementById('taxaJuros').value);
+    const prazo       = parseInt(document.getElementById('prazo').value, 10);
 
     let valido = true;
     const erro = (id, msg) => {
@@ -82,12 +83,18 @@ const SacUI = (() => {
       valido = false;
     };
 
-    if (!valorFinanciado || valorFinanciado <= 0)
-      erro('valorFinanciado', 'Informe um valor de financiamento positivo.');
+    if (!valorImovel || valorImovel <= 0)
+      erro('valorImovel', 'Informe um valor de imóvel positivo.');
+    if (entrada < 0)
+      erro('entrada', 'A entrada não pode ser negativa.');
+    else if (valido && entrada >= valorImovel)
+      erro('entrada', 'A entrada deve ser menor que o valor do imóvel.');
     if (!taxaJuros || taxaJuros <= 0)
       erro('taxaJuros', 'Informe uma taxa de juros positiva.');
     if (!prazo || prazo < 1 || !Number.isInteger(prazo))
       erro('prazo', 'Informe um prazo válido (mínimo 1 mês).');
+
+    const valorFinanciado = valorImovel - entrada;
 
     return valido
       ? { valido: true, data: { valorFinanciado, taxaJuros, prazo } }
@@ -142,7 +149,7 @@ const SacUI = (() => {
   function limparResultado() {
     document.getElementById('resultado-container').classList.add('d-none');
     document.getElementById('resultado-body').innerHTML = '';
-    ['valorFinanciado', 'taxaJuros', 'prazo'].forEach((id) =>
+    ['valorImovel', 'entrada', 'taxaJuros', 'prazo'].forEach((id) =>
       document.getElementById(id).classList.remove('is-invalid')
     );
   }
