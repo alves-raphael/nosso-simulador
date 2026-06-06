@@ -109,6 +109,16 @@ body {
 /* Oculta coluna de aluguel quando não informado */
 .sem-aluguel .col-aluguel { display: none; }
 
+/* SAC: card de destaque (com amortização) */
+.resumo-card-destaque {
+  background: #eaf5ec;
+  border-left-color: var(--cor-acento);
+}
+
+/* SAC: linha de amortização extra na tabela */
+.row-amort-extra td { background-color: rgba(25, 135, 84, 0.07) !important; }
+.row-amort-extra td:first-child { border-left: 4px solid var(--cor-acento); }
+
 /* Mobile */
 @media (max-width: 576px) {
   .table td,
