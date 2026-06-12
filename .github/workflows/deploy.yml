@@ -36,11 +36,9 @@ jobs:
         run: npm run build
 
       - name: Prepare Production Artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: tar -czf "$ARTIFACT_NAME" -C dist .
 
       - name: Upload Production Artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
           name: deploy-artifact
