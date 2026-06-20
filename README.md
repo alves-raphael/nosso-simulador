@@ -4,7 +4,7 @@ Simuladores financeiros para consórcio imobiliário e financiamento SAC, com fo
 
 ## Simuladores
 
-### Consórcio Imobiliário (`index.html`)
+### Consórcio Imobiliário (`/`)
 Calcula as parcelas mensais de um consórcio com reajuste anual configurável (geralmente atrelado a índices como INCC ou IPCA). Exibe uma tabela mês a mês e permite comparar o custo total com o valor de aluguel pago no mesmo período.
 
 **Campos:**
@@ -14,7 +14,7 @@ Calcula as parcelas mensais de um consórcio com reajuste anual configurável (g
 - Reajuste anual (%)
 - Valor do aluguel + correção anual (opcional)
 
-### Financiamento SAC (`sac.html`)
+### Financiamento SAC (`/sac`)
 Simula um financiamento pela Tabela SAC (Sistema de Amortização Constante) e permite adicionar amortizações antecipadas para visualizar a economia em juros gerada.
 
 **Campos:**
@@ -27,9 +27,9 @@ Simula um financiamento pela Tabela SAC (Sistema de Amortização Constante) e p
 ## Stack
 
 - HTML + CSS + JavaScript (vanilla)
+- [Astro](https://astro.build/) para roteamento, build e dev server
 - [Bootstrap 5.3](https://getbootstrap.com/) via CDN
 - [iMask](https://imask.js.org/) para máscaras nos inputs
-- [Vite](https://vitejs.dev/) para build e dev server
 
 ## Desenvolvimento
 
@@ -43,7 +43,6 @@ npm run dev      # servidor local com hot reload
 ```bash
 npm run build    # gera dist/ com assets minificados
 npm run preview  # preview do build de produção
-npm run serve    # serve o dist/ via live-server
 ```
 
-O build gera os arquivos em `dist/` com JS/CSS minificados, hash nos nomes para cache busting e chunks compartilhados entre páginas.
+O build gera os arquivos em `dist/` (`index.html` na raiz, `sac/index.html` para a rota `/sac`) com JS/CSS minificados e hash nos nomes para cache busting.
