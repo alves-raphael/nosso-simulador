@@ -1,0 +1,182 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SimuladoresNav from '../components/SimuladoresNav.astro';
+---
+
+<Layout
+  title="CDB vs LCI — Qual rende mais?"
+  description="Compare CDB e LCI considerando a tabela regressiva de IR. Descubra qual investimento rende mais líquido para o seu prazo."
+>
+  <Fragment slot="header">
+    <header class="mb-4">
+      <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
+        <div>
+          <h1 class="h3 fw-bold text-primary">CDB vs LCI</h1>
+          <p class="text-muted mb-0">Compare o rendimento líquido considerando a tabela regressiva de IR</p>
+        </div>
+        <SimuladoresNav atual="/cdb-vs-lci" />
+      </div>
+    </header>
+  </Fragment>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+      <form id="form-cdb-lci" novalidate>
+        <div class="row g-3">
+
+          <div class="col-md-6">
+            <label for="valorInicial" class="form-label fw-semibold">Valor inicial (R$)</label>
+            <input
+              type="text"
+              inputmode="decimal"
+              id="valorInicial"
+              class="form-control"
+              placeholder="Ex: 10.000"
+            />
+            <div class="invalid-feedback" id="erro-valorInicial"></div>
+          </div>
+
+          <div class="col-md-6">
+            <label for="prazo" class="form-label fw-semibold">Prazo (meses)</label>
+            <input
+              type="number"
+              id="prazo"
+              class="form-control"
+              min="1"
+              step="1"
+              placeholder="Ex: 12"
+            />
+            <div class="invalid-feedback" id="erro-prazo"></div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="cdiAnual" class="form-label fw-semibold">CDI ao ano (%)</label>
+            <input
+              type="text"
+              inputmode="decimal"
+              id="cdiAnual"
+              class="form-control"
+              placeholder="Ex: 10,50"
+            />
+            <div class="invalid-feedback" id="erro-cdiAnual"></div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="percentualCDB" class="form-label fw-semibold">CDB (% do CDI)</label>
+            <input
+              type="text"
+              inputmode="decimal"
+              id="percentualCDB"
+              class="form-control"
+              placeholder="Ex: 110"
+            />
+            <div class="invalid-feedback" id="erro-percentualCDB"></div>
+          </div>
+
+          <div class="col-md-4">
+            <label for="percentualLCI" class="form-label fw-semibold">LCI (% do CDI)</label>
+            <input
+              type="text"
+              inputmode="decimal"
+              id="percentualLCI"
+              class="form-control"
+              placeholder="Ex: 88"
+            />
+            <div class="invalid-feedback" id="erro-percentualLCI"></div>
+          </div>
+
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary px-4">Calcular</button>
+          <button type="reset" class="btn btn-outline-secondary px-4">Limpar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="resultado-container" class="d-none">
+
+    <h2 class="h5 fw-semibold mb-3">Comparativo</h2>
+
+    <div class="row g-3 mb-4">
+
+      <div class="col-md-6">
+        <div class="card h-100" id="card-cdb">
+          <div class="card-header fw-bold text-primary">CDB</div>
+          <div class="card-body">
+            <dl class="mb-0">
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <dt class="fw-normal text-muted">Rendimento bruto</dt>
+                <dd class="mb-0 fw-semibold" id="cdb-rend-bruto">—</dd>
+              </div>
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <dt class="fw-normal text-muted" id="cdb-aliquota-label">IR (—)</dt>
+                <dd class="mb-0 text-danger" id="cdb-ir">—</dd>
+              </div>
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <dt class="fw-normal text-muted">Rendimento líquido</dt>
+                <dd class="mb-0 fw-bold text-success" id="cdb-rend-liquido">—</dd>
+              </div>
+              <div class="d-flex justify-content-between py-2">
+                <dt class="fw-normal text-muted">Valor final</dt>
+                <dd class="mb-0 fw-bold" id="cdb-valor-final">—</dd>
+              </div>
+            </dl>
+            <div class="mt-3 pt-2 border-top text-center">
+              <small class="text-muted">Rentabilidade líquida</small>
+              <div class="h5 text-success mb-0" id="cdb-rentabilidade">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card h-100" id="card-lci">
+          <div class="card-header fw-bold text-success">LCI</div>
+          <div class="card-body">
+            <dl class="mb-0">
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <dt class="fw-normal text-muted">Rendimento bruto</dt>
+                <dd class="mb-0 fw-semibold" id="lci-rend-bruto">—</dd>
+              </div>
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <dt class="fw-normal text-muted">IR</dt>
+                <dd class="mb-0 fw-semibold text-success">Isento</dd>
+              </div>
+              <div class="d-flex justify-content-between border-bottom py-2">
+                <dt class="fw-normal text-muted">Rendimento líquido</dt>
+                <dd class="mb-0 fw-bold text-success" id="lci-rend-liquido">—</dd>
+              </div>
+              <div class="d-flex justify-content-between py-2">
+                <dt class="fw-normal text-muted">Valor final</dt>
+                <dd class="mb-0 fw-bold" id="lci-valor-final">—</dd>
+              </div>
+            </dl>
+            <div class="mt-3 pt-2 border-top text-center">
+              <small class="text-muted">Rentabilidade líquida</small>
+              <div class="h5 text-success mb-0" id="lci-rentabilidade">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="resultado-melhor" class="alert mb-3"></div>
+
+    <div class="alert alert-light border mb-0">
+      <small>
+        Para empatar com este CDB, a LCI precisaria pagar pelo menos
+        <strong id="lci-equivalente">—</strong>.
+      </small>
+    </div>
+
+  </div>
+
+  <Fragment slot="scripts">
+    <script>
+      import '../scripts/cdb-vs-lci-ui.js';
+    </script>
+  </Fragment>
+</Layout>
