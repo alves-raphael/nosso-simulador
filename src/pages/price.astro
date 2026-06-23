@@ -3,22 +3,22 @@ import Layout from '../layouts/Layout.astro';
 import SimuladoresNav from '../components/SimuladoresNav.astro';
 ---
 
-<Layout title="Simulador SAC — Amortização Antecipada">
+<Layout title="Simulador PRICE — Amortização Antecipada" tracking={false}>
   <Fragment slot="header">
     <header class="mb-4">
       <div class="d-flex align-items-start justify-content-between flex-wrap gap-2">
         <div>
-          <h1 class="h3 fw-bold text-primary">Simulador SAC — Amortização Antecipada</h1>
+          <h1 class="h3 fw-bold text-primary">Simulador PRICE — Amortização Antecipada</h1>
           <p class="text-muted mb-0">Veja quanto você economiza em juros ao antecipar parcelas</p>
         </div>
-        <SimuladoresNav atual="/sac" />
+        <SimuladoresNav atual="/price" />
       </div>
     </header>
   </Fragment>
 
   <div class="card shadow-sm mb-4">
     <div class="card-body p-4">
-      <form id="form-sac" novalidate>
+      <form id="form-price" novalidate>
         <div class="row g-3">
 
           <div class="col-md-6">
@@ -221,7 +221,7 @@ import SimuladoresNav from '../components/SimuladoresNav.astro';
 
   <Fragment slot="scripts">
     <script>
-      import '../scripts/sac-ui.js';
+      import '../scripts/price-ui.js';
     </script>
   </Fragment>
 </Layout>

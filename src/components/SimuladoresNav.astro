@@ -1,0 +1,20 @@
+---
+interface Props {
+  atual: string;
+}
+
+const { atual } = Astro.props;
+
+const paginas = [
+  { href: '/', label: 'Consórcio' },
+  { href: '/sac', label: 'SAC' },
+  { href: '/price', label: 'PRICE' },
+  { href: '/juros-compostos', label: 'Juros Compostos' },
+];
+---
+
+<nav class="d-flex flex-wrap gap-2">
+  {paginas.filter((p) => p.href !== atual).map((p) => (
+    <a href={p.href} class="btn btn-sm btn-outline-secondary">{p.label}</a>
+  ))}
+</nav>

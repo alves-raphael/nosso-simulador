@@ -3,20 +3,21 @@ import "../styles/global.css";
 
 interface Props {
   title: string;
+  tracking?: boolean;
 }
 
-const { title } = Astro.props;
+const { title, tracking = true } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script
-      is:inline
-      defer
-      src="https://cloud.umami.is/script.js"
-      data-website-id="82d403b3-8fe9-42d7-93bc-4389f51ad8ff"></script>
+    {tracking && (
+      <script
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id="82d403b3-8fe9-42d7-93bc-4389f51ad8ff"></script>
+    )}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
