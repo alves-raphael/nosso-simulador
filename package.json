@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
+    "@astrojs/sitemap": "^3.7.3",
     "imask": "^7.6.1",
     "typescript": "^6.0.3"
   }
